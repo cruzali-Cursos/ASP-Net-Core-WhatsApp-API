@@ -1,4 +1,5 @@
 ﻿using ASP.NetCore_WhatsApp_1.Models.WhatsappCloud;
+using ASP.NetCore_WhatsApp_1.Services.WhatsappCloud.SendMessage;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASP.NetCore_WhatsApp_1.Controllers
@@ -7,9 +8,30 @@ namespace ASP.NetCore_WhatsApp_1.Controllers
     [Route("api/whatsapp")]
     public class WhatsappController : Controller
     {
-        [HttpGet("test")]
-        public IActionResult Sample()
+        private readonly IWhatsappCloudSendMessage _whatsappCloudSendMessage;
+
+        public WhatsappController(IWhatsappCloudSendMessage whatsappCloudSendMessage)
         {
+            _whatsappCloudSendMessage = whatsappCloudSendMessage;
+        }
+
+
+        [HttpGet("test")]
+        public async Task<IActionResult> Sample()
+        {
+            var data = new
+            {
+                messaging_product = "whatsapp",
+                recipient_type = "individual",
+                to = "522222996577",
+                type = "text",
+                text = new
+                {
+                    body = "Mensaje texto desde API .NEt core"
+                }
+            };
+
+            var result = await _whatsappCloudSendMessage.Execute(data);
             return Ok("Ok Sample");
         }
 
