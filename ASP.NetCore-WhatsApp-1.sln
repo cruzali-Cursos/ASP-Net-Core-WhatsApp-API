@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASP.NetCore-WhatsApp-1", "ASP.NetCore-WhatsApp-1.csproj", "{1A20A248-CF68-46E2-B799-19FD2AA88B7B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A20A248-CF68-46E2-B799-19FD2AA88B7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A20A248-CF68-46E2-B799-19FD2AA88B7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A20A248-CF68-46E2-B799-19FD2AA88B7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A20A248-CF68-46E2-B799-19FD2AA88B7B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8C6A02F1-A5FA-4A57-97D9-3D3C9EDBABD5}
+	EndGlobalSection
+EndGlobal
