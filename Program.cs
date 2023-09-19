@@ -1,4 +1,5 @@
 using ASP.NetCore_WhatsApp_1.Services.WhatsappCloud.SendMessage;
+using ASP.NetCore_WhatsApp_1.Util;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // inyeccion de dependencias
 builder.Services.AddSingleton<IWhatsappCloudSendMessage,  WhatsappCloudSendMessage>();
+builder.Services.AddSingleton<IUtil, Util>();
 
 var app = builder.Build();
 

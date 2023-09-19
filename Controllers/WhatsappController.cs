@@ -1,5 +1,6 @@
 ﻿using ASP.NetCore_WhatsApp_1.Models.WhatsappCloud;
 using ASP.NetCore_WhatsApp_1.Services.WhatsappCloud.SendMessage;
+using ASP.NetCore_WhatsApp_1.Util;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASP.NetCore_WhatsApp_1.Controllers
@@ -9,10 +10,13 @@ namespace ASP.NetCore_WhatsApp_1.Controllers
     public class WhatsappController : Controller
     {
         private readonly IWhatsappCloudSendMessage _whatsappCloudSendMessage;
+        private readonly IUtil _iutil;
 
-        public WhatsappController(IWhatsappCloudSendMessage whatsappCloudSendMessage)
+        public WhatsappController(IWhatsappCloudSendMessage whatsappCloudSendMessage,
+                                    IUtil iutil)
         {
             _whatsappCloudSendMessage = whatsappCloudSendMessage;
+            _iutil = iutil;
         }
 
 
@@ -62,6 +66,39 @@ namespace ASP.NetCore_WhatsApp_1.Controllers
                 {
                     var userNumber = message.From;
                     var userText = GetUserText(message);
+
+                    object objectMessage;
+
+                    // Categorizar mensajes
+                    switch (userText.ToUpper())
+                    {
+                        case "TEXT":
+                            objectMessage = _iutil.TextMessage("Mensaje personalizado 23435", userNumber);
+                            break;
+                        case "IMAGE":
+                            objectMessage = _iutil.ImageMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/image_whatsapp.png", userNumber);
+                            break;
+                        case "AUDIO":
+                            objectMessage = _iutil.AudioMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/audio_whatsapp.mp3", userNumber);
+                            break;
+                        case "VIDEO":
+                            objectMessage = _iutil.VideoMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/video_whatsapp.mp4", userNumber);
+                            break;
+                        case "DOCUMENT":
+                            objectMessage = _iutil.DocumentMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/document_whatsapp.pdf", userNumber);
+                            break;
+                        case "LOCATION":
+                            objectMessage = _iutil.LocationMessage(userNumber);
+                            break;
+                        case "BUTTON":
+                            objectMessage = _iutil.ButtonsMessage(userNumber);
+                            break;
+                        default:
+                            objectMessage = _iutil.TextMessage("Caso no contemplado", userNumber);
+                            break;
+                    }
+
+                    await _whatsappCloudSendMessage.Execute(objectMessage);
                 }
 
 
