@@ -64,7 +64,7 @@ namespace ASP.NetCore_WhatsApp_1.Controllers
 
                 if (message != null)
                 {
-                    var userNumber = message.From;
+                    var userNumber = message.From.Length == 13 ? message.From.Remove(2, 1) : message.From; //message.From;
                     var userText = GetUserText(message);
 
                     object objectMessage;
