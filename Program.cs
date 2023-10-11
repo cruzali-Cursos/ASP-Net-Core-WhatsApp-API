@@ -1,3 +1,4 @@
+using ASP.NetCore_WhatsApp_1.Services.OpenAI.ChatGPT;
 using ASP.NetCore_WhatsApp_1.Services.WhatsappCloud.SendMessage;
 using ASP.NetCore_WhatsApp_1.Util;
 
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 // inyeccion de dependencias
 builder.Services.AddSingleton<IWhatsappCloudSendMessage,  WhatsappCloudSendMessage>();
 builder.Services.AddSingleton<IUtil, Util>();
+builder.Services.AddSingleton<IChatGPTService, ChatGPTService>();
 
 var app = builder.Build();
 

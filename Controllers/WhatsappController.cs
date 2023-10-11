@@ -67,7 +67,7 @@ namespace ASP.NetCore_WhatsApp_1.Controllers
                     var userNumber = message.From.Length == 13 ? message.From.Remove(2, 1) : message.From; //message.From;
                     var userText = GetUserText(message);
 
-                    object objectMessage;
+                    List<object> objectMessage = new List<object>();
 
                     // TO-DO
                     // Armar un arry de palabras frecuentes con una intención para responder mejor
@@ -75,42 +75,43 @@ namespace ASP.NetCore_WhatsApp_1.Controllers
 
                     if (userText.ToUpper().Contains("HOLA"))
                     {
-                        objectMessage = _iutil.TextMessage("Hola! ¿En qué puedo ayudarte? 😄", userNumber);
+                        var obj = _iutil.TextMessage("Hola! ¿En qué puedo ayudarte? 😄", userNumber);
+                        objectMessage.Add(obj); 
                     } else if (userText.ToUpper().Contains("GRACIAS"))
                     {
-                        objectMessage = _iutil.TextMessage("Estoy aquí para servirte. 😊", userNumber);
+                        objectMessage.Add((object)_iutil.TextMessage("Estoy aquí para servirte. 😊", userNumber));
                     } else if (userText.ToUpper().Contains("ADIOS") || userText.ToUpper().Contains("BYE"))
                     {
-                        objectMessage = _iutil.TextMessage("Aquí seguiré para ayudar nuevamente cuando lo necesites", userNumber);
+                        objectMessage.Add((object)_iutil.TextMessage("Aquí seguiré para ayudar nuevamente cuando lo necesites", userNumber));
                     }
                     else
                     {
-                        objectMessage = _iutil.TextMessage("Lo siento, no puedo entenderte. Intenta decirmelo de otra forma", userNumber);
+                        objectMessage.Add((object)_iutil.TextMessage("Lo siento, no puedo entenderte. Intenta decirmelo de otra forma", userNumber));
                     }
 
                     // Categorizar mensajes
                     switch (userText.ToUpper())
                     {
                         case "TEXT":
-                            objectMessage = _iutil.TextMessage("Mensaje personalizado 23435", userNumber);
+                            objectMessage.Add((object)_iutil.TextMessage("Mensaje personalizado 23435", userNumber));
                             break;
                         case "IMAGE":
-                            objectMessage = _iutil.ImageMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/image_whatsapp.png", userNumber);
+                            objectMessage.Add((object)_iutil.ImageMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/image_whatsapp.png", userNumber));
                             break;
                         case "AUDIO":
-                            objectMessage = _iutil.AudioMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/audio_whatsapp.mp3", userNumber);
+                            objectMessage.Add((object)_iutil.AudioMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/audio_whatsapp.mp3", userNumber));
                             break;
                         case "VIDEO":
-                            objectMessage = _iutil.VideoMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/video_whatsapp.mp4", userNumber);
+                            objectMessage.Add((object)_iutil.VideoMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/video_whatsapp.mp4", userNumber));
                             break;
                         case "DOCUMENT":
-                            objectMessage = _iutil.DocumentMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/document_whatsapp.pdf", userNumber);
+                            objectMessage.Add((object)_iutil.DocumentMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/document_whatsapp.pdf", userNumber));
                             break;
                         case "LOCATION":
-                            objectMessage = _iutil.LocationMessage(userNumber);
+                            objectMessage.Add((object)_iutil.LocationMessage(userNumber));
                             break;
                         case "BUTTON":
-                            objectMessage = _iutil.ButtonsMessage(userNumber);
+                            objectMessage.Add((object)_iutil.ButtonsMessage(userNumber));
                             break;
                         //default:
                         //    objectMessage = _iutil.TextMessage("Caso no contemplado", userNumber);
