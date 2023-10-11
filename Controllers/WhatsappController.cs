@@ -1,4 +1,5 @@
 ﻿using ASP.NetCore_WhatsApp_1.Models.WhatsappCloud;
+using ASP.NetCore_WhatsApp_1.Services.OpenAI.ChatGPT;
 using ASP.NetCore_WhatsApp_1.Services.WhatsappCloud.SendMessage;
 using ASP.NetCore_WhatsApp_1.Util;
 using Microsoft.AspNetCore.Mvc;
@@ -11,12 +12,14 @@ namespace ASP.NetCore_WhatsApp_1.Controllers
     {
         private readonly IWhatsappCloudSendMessage _whatsappCloudSendMessage;
         private readonly IUtil _iutil;
+        private readonly IChatGPTService chatGPTService;
 
         public WhatsappController(IWhatsappCloudSendMessage whatsappCloudSendMessage,
-                                    IUtil iutil)
+                                    IUtil iutil, IChatGPTService chatGPTService)
         {
             _whatsappCloudSendMessage = whatsappCloudSendMessage;
             _iutil = iutil;
+            this.chatGPTService = chatGPTService;
         }
 
 
@@ -67,58 +70,80 @@ namespace ASP.NetCore_WhatsApp_1.Controllers
                     var userNumber = message.From.Length == 13 ? message.From.Remove(2, 1) : message.From; //message.From;
                     var userText = GetUserText(message);
 
-                    List<object> objectMessage = new List<object>();
+                    List<object> listObjectMessage = new List<object>();
 
                     // TO-DO
-                    // Armar un arry de palabras frecuentes con una intención para responder mejor
-
+                    // Armar un array de palabras frecuentes con una intención para responder mejor
+                    
+                    #region SIN Chatgpt
 
                     if (userText.ToUpper().Contains("HOLA"))
                     {
                         var obj = _iutil.TextMessage("Hola! ¿En qué puedo ayudarte? 😄", userNumber);
-                        objectMessage.Add(obj); 
+                        listObjectMessage.Add(obj); 
                     } else if (userText.ToUpper().Contains("GRACIAS"))
                     {
-                        objectMessage.Add((object)_iutil.TextMessage("Estoy aquí para servirte. 😊", userNumber));
+                        listObjectMessage.Add((object)_iutil.TextMessage("Estoy aquí para servirte. 😊", userNumber));
                     } else if (userText.ToUpper().Contains("ADIOS") || userText.ToUpper().Contains("BYE"))
                     {
-                        objectMessage.Add((object)_iutil.TextMessage("Aquí seguiré para ayudar nuevamente cuando lo necesites", userNumber));
+                        listObjectMessage.Add((object)_iutil.TextMessage("Aquí seguiré para ayudar nuevamente " +
+                            "cuando lo necesites", userNumber));
                     }
                     else
                     {
-                        objectMessage.Add((object)_iutil.TextMessage("Lo siento, no puedo entenderte. Intenta decirmelo de otra forma", userNumber));
+                        listObjectMessage.Add((object)_iutil.TextMessage("Lo siento, no puedo entenderte. " +
+                            "Intenta decirmelo de otra forma", userNumber));
                     }
 
                     // Categorizar mensajes
                     switch (userText.ToUpper())
                     {
                         case "TEXT":
-                            objectMessage.Add((object)_iutil.TextMessage("Mensaje personalizado 23435", userNumber));
+                            listObjectMessage.Add((object)_iutil.TextMessage("Mensaje personalizado 23435", userNumber));
                             break;
                         case "IMAGE":
-                            objectMessage.Add((object)_iutil.ImageMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/image_whatsapp.png", userNumber));
+                            listObjectMessage.Add((object)_iutil.ImageMessage(
+                                "https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/image_whatsapp.png",
+                                userNumber));
                             break;
                         case "AUDIO":
-                            objectMessage.Add((object)_iutil.AudioMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/audio_whatsapp.mp3", userNumber));
+                            listObjectMessage.Add((object)_iutil.AudioMessage(
+                                "https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/audio_whatsapp.mp3",
+                                userNumber));
                             break;
                         case "VIDEO":
-                            objectMessage.Add((object)_iutil.VideoMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/video_whatsapp.mp4", userNumber));
+                            listObjectMessage.Add((object)_iutil.VideoMessage(
+                                "https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/video_whatsapp.mp4",
+                                userNumber));
                             break;
                         case "DOCUMENT":
-                            objectMessage.Add((object)_iutil.DocumentMessage("https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/document_whatsapp.pdf", userNumber));
+                            listObjectMessage.Add((object)_iutil.DocumentMessage(
+                                "https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/document_whatsapp.pdf",
+                                userNumber));
                             break;
                         case "LOCATION":
-                            objectMessage.Add((object)_iutil.LocationMessage(userNumber));
+                            listObjectMessage.Add((object)_iutil.LocationMessage(userNumber));
                             break;
                         case "BUTTON":
-                            objectMessage.Add((object)_iutil.ButtonsMessage(userNumber));
+                            listObjectMessage.Add((object)_iutil.ButtonsMessage(userNumber));
                             break;
                         //default:
                         //    objectMessage = _iutil.TextMessage("Caso no contemplado", userNumber);
                         //    break;
                     }
+                    #endregion
 
-                    await _whatsappCloudSendMessage.Execute(objectMessage);
+                    #region CON Chatgpt
+                    var responseChatGPT = await chatGPTService.Execute(userText);
+                    var objectMessage = _iutil.TextMessage(responseChatGPT, userNumber);
+                    listObjectMessage.Add(objectMessage);
+
+                    #endregion
+
+                    foreach (var item in listObjectMessage)
+                    {
+                        await _whatsappCloudSendMessage.Execute(item);
+                    }
                 }
 
 

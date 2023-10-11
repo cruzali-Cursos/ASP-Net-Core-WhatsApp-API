@@ -10,7 +10,8 @@ namespace ASP.NetCore_WhatsApp_1.Services.OpenAI.ChatGPT
         {
             try
             {
-                string apiKey = "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";
+                //string apiKey = "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"; // cuenta de alicruz.mon+desarrollo
+                string apiKey = "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"; // gtecc.ali
                 var openaiService = new OpenAIAPI(apiKey);
 
                 var completion = new CompletionRequest
