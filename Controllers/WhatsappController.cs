@@ -69,6 +69,25 @@ namespace ASP.NetCore_WhatsApp_1.Controllers
 
                     object objectMessage;
 
+                    // TO-DO
+                    // Armar un arry de palabras frecuentes con una intención para responder mejor
+
+
+                    if (userText.ToUpper().Contains("HOLA"))
+                    {
+                        objectMessage = _iutil.TextMessage("Hola! ¿En qué puedo ayudarte? 😄", userNumber);
+                    } else if (userText.ToUpper().Contains("GRACIAS"))
+                    {
+                        objectMessage = _iutil.TextMessage("Estoy aquí para servirte. 😊", userNumber);
+                    } else if (userText.ToUpper().Contains("ADIOS") || userText.ToUpper().Contains("BYE"))
+                    {
+                        objectMessage = _iutil.TextMessage("Aquí seguiré para ayudar nuevamente cuando lo necesites", userNumber);
+                    }
+                    else
+                    {
+                        objectMessage = _iutil.TextMessage("Lo siento, no puedo entenderte. Intenta decirmelo de otra forma", userNumber);
+                    }
+
                     // Categorizar mensajes
                     switch (userText.ToUpper())
                     {
@@ -93,9 +112,9 @@ namespace ASP.NetCore_WhatsApp_1.Controllers
                         case "BUTTON":
                             objectMessage = _iutil.ButtonsMessage(userNumber);
                             break;
-                        default:
-                            objectMessage = _iutil.TextMessage("Caso no contemplado", userNumber);
-                            break;
+                        //default:
+                        //    objectMessage = _iutil.TextMessage("Caso no contemplado", userNumber);
+                        //    break;
                     }
 
                     await _whatsappCloudSendMessage.Execute(objectMessage);
