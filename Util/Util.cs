@@ -115,6 +115,7 @@
                     {
                         buttons = new List<object>
                         {
+                            // Hasta 3 botones máximo
                             new
                             {
                                 type = "reply",

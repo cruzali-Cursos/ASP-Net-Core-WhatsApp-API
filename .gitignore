@@ -396,3 +396,13 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+
+
+# Ignorar config FIREBASE ACM PC
+firebase_config
+firebase_config/
+
+# Configuracion 
+appsettings.Development.json
+appsettings.Production.json

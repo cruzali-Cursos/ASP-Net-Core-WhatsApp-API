@@ -5,14 +5,18 @@ namespace ASP.NetCore_WhatsApp_1.Services.OpenAI.ChatGPT
 {
     public class ChatGPTService : IChatGPTService
     {
+        private readonly IConfiguration _configuration;
+        public ChatGPTService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         public async Task<string> Execute(string textUser)
         {
             try
-            {
-                //string apiKey = "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"; // cuenta de alicruz.mon+desarrollo
-                string apiKey = "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"; // gtecc.ali
-                var openaiService = new OpenAIAPI(apiKey);
+            {                
+                string openIAApiKey = _configuration["AppSettings:_openIAApiKey"];
+                var openaiService = new OpenAIAPI(openIAApiKey);
 
                 var completion = new CompletionRequest
                 {

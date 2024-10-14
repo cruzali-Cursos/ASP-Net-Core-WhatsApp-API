@@ -1,11 +1,22 @@
-﻿using Newtonsoft.Json;
-using System.Runtime.CompilerServices;
+﻿using ASP.NetCore_WhatsApp_1.Services.Firebase;
+using Newtonsoft.Json;
 using System.Text;
 
 namespace ASP.NetCore_WhatsApp_1.Services.WhatsappCloud.SendMessage
 {
     public class WhatsappCloudSendMessage : IWhatsappCloudSendMessage
     {
+        private readonly IConfiguration _configuration;
+        private readonly FirebaseService _firebaseService;
+
+        public WhatsappCloudSendMessage(IConfiguration configuration, FirebaseService firebaseService)
+        {
+            _configuration = configuration;
+            _firebaseService = firebaseService;
+        }
+
+
+        // 
         public async Task<bool> Execute(object model)
         {
             var client = new HttpClient();
@@ -13,13 +24,15 @@ namespace ASP.NetCore_WhatsApp_1.Services.WhatsappCloud.SendMessage
 
             using (var content = new ByteArrayContent(byteData))
             {
-                string endpoint = "https://graph.facebook.com";
-                string phoneNumberId = "124978000694990";
-                string accessToken = "EAACAkOtc2IQBO0CGYTFv1DZB6XQwRdMietkmucpYeuUumEr4JlkQsv0eopI9zDPZCiPP61PiChZAv4zAnWaRjfrap0k1mZCly9qil0B3MM9Its4qMZCGHjv6rRlrWqezshM76ZAXZAJJo7ZALg3dTeuf1POFFdIBXHB7ZAoDYp3iM9fVzOAQkf4sS6WGVXCMKuUrp3668TMuvVnPrMc9p59MZD";
-                string uri = $"{endpoint}/v17.0/{phoneNumberId}/messages?";
+                string accessMeta_WA_Token = await _firebaseService.GetAccessTokenAsync("Meta_WA_ASPNetCore", "accessToken");
+                string endpoint = _configuration["AppSettings:_endPoint"];
+                string phoneNumberId = _configuration["AppSettings:_phoneNumberId"];
+                string versionAPI = _configuration["AppSettings:_versionAPI"];
+
+                string uri = $"{endpoint}/{versionAPI}/{phoneNumberId}/messages?";
 
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessMeta_WA_Token}");
 
                 var response = await client.PostAsync(uri, content);
 
@@ -30,9 +43,9 @@ namespace ASP.NetCore_WhatsApp_1.Services.WhatsappCloud.SendMessage
 
                 return false;                
             }
-
-
         }
+
+
         
     }
 }

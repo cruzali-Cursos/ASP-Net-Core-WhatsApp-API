@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/firebase_config/app-whatsapp-aspnetcore-firebase-adminsdk-owj7t-b5eb481bbb.json
+    ports:
+      - "8080:80"  # Mapea el puerto 80 del contenedor al puerto 8080 del host
+    volumes:
+      - ./firebase_config:/app/firebase_config  # Monta la carpeta de configuración de Firebase
+    restart: always  # Reinicia el contenedor automáticamente si se detiene
